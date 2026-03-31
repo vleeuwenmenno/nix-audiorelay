@@ -12,6 +12,11 @@
         config.allowUnfree = true;
       };
 
+      # Reusable overlay so consumers can add the package to their nixpkgs
+      overlay = final: prev: {
+        audiorelay = self.packages.${final.system}.audiorelay;
+      };
+
       audiorelay = pkgs.stdenv.mkDerivation rec {
         pname = "audiorelay";
         # You can find new versions on https://community.audiorelay.net/c/releases/9
@@ -91,6 +96,29 @@
       apps.${system}.default = {
         type = "app";
         program = "${audiorelay}/bin/AudioRelay";
+      };
+
+      overlays.default = overlay;
+
+      # NixOS module — add `inputs.nix-audiorelay.nixosModules.audiorelay` to your modules list
+      nixosModules.audiorelay = { config, lib, pkgs, ... }: {
+        options.programs.audiorelay.enable = lib.mkEnableOption "AudioRelay";
+
+        config = lib.mkIf config.programs.audiorelay.enable {
+          nixpkgs.overlays = [ overlay ];
+          nixpkgs.config.allowUnfree = true;
+          environment.systemPackages = [ pkgs.audiorelay ];
+        };
+      };
+
+      # Home Manager module — add `inputs.nix-audiorelay.homeManagerModules.audiorelay` to your modules list
+      homeManagerModules.audiorelay = { config, lib, pkgs, ... }: {
+        options.programs.audiorelay.enable = lib.mkEnableOption "AudioRelay";
+
+        config = lib.mkIf config.programs.audiorelay.enable {
+          nixpkgs.overlays = [ overlay ];
+          home.packages = [ pkgs.audiorelay ];
+        };
       };
     };
 }
