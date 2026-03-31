@@ -67,6 +67,26 @@
           runHook preInstall
           mkdir -p $out
           cp -r bin lib $out/
+
+          # Lowercase alias so `audiorelay` works in the shell
+          ln -s $out/bin/AudioRelay $out/bin/audiorelay
+
+          # Icon
+          install -Dm644 lib/AudioRelay.png $out/share/icons/hicolor/256x256/apps/audiorelay.png
+
+          # Desktop entry
+          mkdir -p $out/share/applications
+          cat > $out/share/applications/audiorelay.desktop <<EOF
+          [Desktop Entry]
+          Name=AudioRelay
+          Comment=Stream audio from your PC to your phone
+          Exec=$out/bin/AudioRelay
+          Icon=audiorelay
+          Terminal=false
+          Type=Application
+          Categories=Audio;Network;
+          Keywords=audio;relay;stream;phone;
+          EOF
           runHook postInstall
         '';
 
