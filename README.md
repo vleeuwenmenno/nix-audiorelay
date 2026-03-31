@@ -5,7 +5,7 @@ Nix flake packaging [AudioRelay](https://audiorelay.net) for NixOS/Linux — str
 ## Quick run (no install)
 
 ```bash
-nix run github:yourusername/nix-audiorelay
+nix run github:vleeuwenmenno/nix-audiorelay
 ```
 
 ---
@@ -19,7 +19,7 @@ In your `flake.nix`:
 ```nix
 inputs = {
   nix-audiorelay = {
-    url = "github:yourusername/nix-audiorelay";
+    url = "github:vleeuwenmenno/nix-audiorelay";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 };
